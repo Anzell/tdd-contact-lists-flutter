@@ -1,0 +1,49 @@
+import 'package:contactlistwithhive/core/helpers/string_helper.dart';
+import 'package:contactlistwithhive/data/datasources/local/contact_local_datasource.dart';
+import 'package:contactlistwithhive/data/models/contact_model.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:mockito/annotations.dart';
+
+import 'package:hive/hive.dart';
+
+import 'contact_local_datasource_test.mocks.dart';
+
+@GenerateMocks([HiveInterface, Box, StringHelper])
+void main() {
+  late HiveInterface mockHive;
+  late Box mockHiveBox;
+  late ContactLocalDatasource datasource;
+  late StringHelper mockStringHelper;
+
+  setUp(() {
+    mockHive = MockHiveInterface();
+    mockHiveBox = MockBox();
+    mockStringHelper = MockStringHelper();
+    datasource = ContactLocalDatasourceImpl(hive: mockHive, stringHelper: mockStringHelper);
+  });
+
+  group("add contact", () {
+    final contactModel = ContactModel(name: "andriel test", number: "123456");
+    final testUuid = "123";
+
+    test("should register a new contact", () async {
+      when(mockHive.openBox("contacts")).thenAnswer((_) async => mockHiveBox);
+      when(mockStringHelper.generateUniqueId).thenReturn(testUuid);
+      when(mockHiveBox.put(testUuid, any)).thenAnswer((_) async => 1);
+      await datasource.addContact(newContact: contactModel);
+      verify(mockStringHelper.generateUniqueId).called(1);
+      verify(mockHive.openBox("contacts")).called(1);
+      verify(mockHiveBox.put(testUuid, any)).called(1);
+    });
+  });
+
+  group("remove contact", () {
+    final testId = "1";
+
+    test("should remove a contact by provided id", () async {
+      when(mockHive.openBox("contacts")).thenAnswer((_) async => mockHiveBox);
+      when(mockHiveBox.delete(any)).thenAnswer((_) async => 1);
+    });
+  });
+}
