@@ -34,6 +34,30 @@ class ContactControllerBloc extends Bloc<ContactControllerBlocEvent, ContactCont
         final contactResult = contactConverter.valueStringToContact(name: event.name, number: event.number);
         contactResult.fold((failure) => emit(Error(message: _mapFailureMessage(failure))), (contact) async {
           final addContactUseCaseResult = await addContactUseCase(AddContactUseCaseParams(contact: contact));
+          addContactUseCaseResult.fold(
+            (failure) => emit(Error(message: _mapFailureMessage(failure))),
+            (_) => emit(Success()),
+          );
+        });
+      }
+
+      if (event is RemoveContactBlocEvent) {
+        final removeContactResult = await removeContactUseCase(RemoveContactUseCaseParams(contactId: event.id));
+        removeContactResult.fold(
+          (failure) => emit(Error(message: _mapFailureMessage(failure))),
+          (_) => emit(Success()),
+        );
+      }
+
+      if (event is UpdateContactBlocEvent) {
+        final contactResult =
+            contactConverter.valueStringToContact(name: event.name, number: event.number, id: event.id);
+        contactResult.fold((failure) => emit(Error(message: _mapFailureMessage(failure))), (contact) async {
+          final updateContactResult = await updateContactUseCase(UpdateContactUseCaseParams(contact: contact));
+          updateContactResult.fold(
+            (failure) => emit(Error(message: _mapFailureMessage(failure))),
+            (_) => emit(Success()),
+          );
         });
       }
     });
@@ -45,6 +69,8 @@ class ContactControllerBloc extends Bloc<ContactControllerBlocEvent, ContactCont
         return ErrorMessages.invalidName;
       case InvalidNumberInputFailure:
         return ErrorMessages.invalidNumber;
+      case ServerFailure:
+        return ErrorMessages.serverError;
       default:
         return ErrorMessages.unkowmnError;
     }

@@ -11,6 +11,8 @@ class Empty extends ContactControllerBlocState {}
 
 class Loading extends ContactControllerBlocState {}
 
+class Success extends ContactControllerBlocState {}
+
 class Loaded extends ContactControllerBlocState {
   final List<Contact> contacts;
 

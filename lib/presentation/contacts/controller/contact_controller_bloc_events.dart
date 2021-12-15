@@ -32,10 +32,12 @@ class RemoveContactBlocEvent extends ContactControllerBlocEvent {
 class UpdateContactBlocEvent extends ContactControllerBlocEvent {
   final String name;
   final String number;
+  final String id;
 
   UpdateContactBlocEvent({
     required this.name,
     required this.number,
+    required this.id,
   });
 
   @override
