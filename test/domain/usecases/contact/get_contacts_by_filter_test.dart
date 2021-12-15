@@ -1,5 +1,4 @@
 import 'package:contactlistwithhive/core/errors/failures.dart';
-import 'package:contactlistwithhive/domain/entities/common/search_filter.dart';
 import 'package:contactlistwithhive/domain/entities/contact.dart';
 import 'package:contactlistwithhive/domain/repositories/contact_repository.dart';
 import 'package:contactlistwithhive/domain/usecases/contact/get_contacts_by_filter.dart';
@@ -20,7 +19,7 @@ void main() {
     usecase = GetContactsByFilterUseCase(repository: mockContactRepository);
   });
 
-  final filterTest = SearchFilter(name: "test new contact", number: "123456");
+  final filterTest = "test contact";
   final List<Contact> testContactsList = [
     Contact(id: "123456", name: "test contact 1", number: "123456"),
     Contact(id: "123456", name: "test contact 2", number: "654321"),

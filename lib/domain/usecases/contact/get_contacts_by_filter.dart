@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:contactlistwithhive/core/errors/failures.dart';
-import 'package:contactlistwithhive/domain/entities/common/search_filter.dart';
 import 'package:contactlistwithhive/domain/entities/contact.dart';
 import 'package:contactlistwithhive/domain/repositories/contact_repository.dart';
 import 'package:contactlistwithhive/domain/usecases/usecase.dart';
@@ -19,7 +18,7 @@ class GetContactsByFilterUseCase implements UseCase<List<Contact>, GetContactsBy
 }
 
 class GetContactsByFilterParams extends Equatable {
-  final SearchFilter filter;
+  final String filter;
 
   const GetContactsByFilterParams({required this.filter});
 

@@ -5,7 +5,6 @@ import 'package:contactlistwithhive/core/errors/exceptions.dart';
 import 'package:contactlistwithhive/core/helpers/string_helper.dart';
 import 'package:contactlistwithhive/data/datasources/local/contact_local_datasource.dart';
 import 'package:contactlistwithhive/data/models/contact_model.dart';
-import 'package:contactlistwithhive/domain/entities/common/search_filter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
@@ -95,9 +94,9 @@ void main() {
     test("should return a valid List<ContactModel> based in provided filter by name", () async {
       when(mockHive.openBox(HiveBoxes.contacts)).thenAnswer((_) async => mockHiveBox);
       when(mockHiveBox.toMap()).thenReturn(contacts);
-      List<ContactModel> result = await datasource.getContactsByFilter(filter: SearchFilter(name: "andr"));
+      List<ContactModel> result = await datasource.getContactsByFilter(filter: "andr");
       expect(result, equals([ContactModel(id: "1", name: "andriel", number: "123")]));
-      result = await datasource.getContactsByFilter(filter: SearchFilter(name: "dr"));
+      result = await datasource.getContactsByFilter(filter: "dr");
       expect(
           result,
           equals([
@@ -109,14 +108,14 @@ void main() {
     test("should return a valid List<ContactModel> based in provided filter by number", () async {
       when(mockHive.openBox(HiveBoxes.contacts)).thenAnswer((_) async => mockHiveBox);
       when(mockHiveBox.toMap()).thenReturn(contacts);
-      final result = await datasource.getContactsByFilter(filter: SearchFilter(number: "123"));
+      final result = await datasource.getContactsByFilter(filter: "123");
       expect(result, equals([ContactModel(id: "1", name: "andriel", number: "123")]));
     });
 
     test("should return a empty list when contact is not in list", () async {
       when(mockHive.openBox(HiveBoxes.contacts)).thenAnswer((_) async => mockHiveBox);
       when(mockHiveBox.toMap()).thenReturn(contacts);
-      final result = await datasource.getContactsByFilter(filter: SearchFilter(name: "not cached contact"));
+      final result = await datasource.getContactsByFilter(filter: "not cached contact");
       expect(result, equals([]));
     });
   });

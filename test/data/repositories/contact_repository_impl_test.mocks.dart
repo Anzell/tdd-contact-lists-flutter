@@ -7,8 +7,6 @@ import 'dart:async' as _i3;
 import 'package:contactlistwithhive/data/datasources/local/contact_local_datasource.dart'
     as _i2;
 import 'package:contactlistwithhive/data/models/contact_model.dart' as _i5;
-import 'package:contactlistwithhive/domain/entities/common/search_filter.dart'
-    as _i6;
 import 'package:contactlistwithhive/domain/entities/contact.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -52,8 +50,7 @@ class MockContactLocalDatasource extends _i1.Mock
                   Future<List<_i5.ContactModel>>.value(<_i5.ContactModel>[]))
           as _i3.Future<List<_i5.ContactModel>>);
   @override
-  _i3.Future<List<_i5.ContactModel>> getContactsByFilter(
-          {_i6.SearchFilter? filter}) =>
+  _i3.Future<List<_i5.ContactModel>> getContactsByFilter({String? filter}) =>
       (super.noSuchMethod(
               Invocation.method(#getContactsByFilter, [], {#filter: filter}),
               returnValue:

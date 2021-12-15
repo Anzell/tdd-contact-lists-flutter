@@ -1,7 +1,6 @@
 import 'package:contactlistwithhive/core/errors/exceptions.dart';
 import 'package:contactlistwithhive/data/datasources/local/contact_local_datasource.dart';
 import 'package:contactlistwithhive/domain/entities/contact.dart';
-import 'package:contactlistwithhive/domain/entities/common/search_filter.dart';
 import 'package:contactlistwithhive/core/errors/failures.dart';
 import 'package:contactlistwithhive/domain/repositories/contact_repository.dart';
 import 'package:dartz/dartz.dart';
@@ -36,7 +35,7 @@ class ContactRepositoryImpl implements ContactRepository {
   }
 
   @override
-  Future<Either<Failure, List<Contact>>> getContactsByFilter({required SearchFilter filter}) async {
+  Future<Either<Failure, List<Contact>>> getContactsByFilter({required String filter}) async {
     try {
       final result = await contactDatasource.getContactsByFilter(filter: filter);
       return Right(result);

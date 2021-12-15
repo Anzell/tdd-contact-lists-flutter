@@ -5,8 +5,6 @@
 import 'dart:async' as _i4;
 
 import 'package:contactlistwithhive/core/errors/failures.dart' as _i5;
-import 'package:contactlistwithhive/domain/entities/common/search_filter.dart'
-    as _i7;
 import 'package:contactlistwithhive/domain/entities/contact.dart' as _i6;
 import 'package:contactlistwithhive/domain/repositories/contact_repository.dart'
     as _i3;
@@ -64,7 +62,7 @@ class MockContactRepository extends _i1.Mock implements _i3.ContactRepository {
           .Future<_i2.Either<_i5.Failure, List<_i6.Contact>>>);
   @override
   _i4.Future<_i2.Either<_i5.Failure, List<_i6.Contact>>> getContactsByFilter(
-          {_i7.SearchFilter? filter}) =>
+          {String? filter}) =>
       (super.noSuchMethod(
           Invocation.method(#getContactsByFilter, [], {#filter: filter}),
           returnValue: Future<_i2.Either<_i5.Failure, List<_i6.Contact>>>.value(

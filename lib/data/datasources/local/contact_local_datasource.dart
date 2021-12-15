@@ -5,7 +5,6 @@ import 'package:contactlistwithhive/data/mappers/contact_mapper.dart';
 import 'package:hive/hive.dart';
 
 import 'package:contactlistwithhive/data/models/contact_model.dart';
-import 'package:contactlistwithhive/domain/entities/common/search_filter.dart';
 import 'package:contactlistwithhive/domain/entities/contact.dart';
 
 abstract class ContactLocalDatasource {
@@ -13,7 +12,7 @@ abstract class ContactLocalDatasource {
   Future<void> removeContact({required String contactId});
   Future<void> updateContact({required Contact contact});
   Future<List<ContactModel>> getAllContacts();
-  Future<List<ContactModel>> getContactsByFilter({required SearchFilter filter});
+  Future<List<ContactModel>> getContactsByFilter({required String filter});
 }
 
 class ContactLocalDatasourceImpl implements ContactLocalDatasource {
@@ -41,13 +40,12 @@ class ContactLocalDatasourceImpl implements ContactLocalDatasource {
   }
 
   @override
-  Future<List<ContactModel>> getContactsByFilter({required SearchFilter filter}) async {
+  Future<List<ContactModel>> getContactsByFilter({required String filter}) async {
     final box = await _openHiveContactsBox();
     final contacts = box.toMap();
     List<ContactModel> foundContacts = [];
     contacts.forEach((key, value) {
-      if ((filter.name != null && value['name'].toString().contains(filter.name!)) ||
-          (filter.number != null && value['number'].toString().contains(filter.number!))) {
+      if ((value['name'].toString().contains(filter)) || (value['number'].toString().contains(filter))) {
         foundContacts.add(ContactModel.fromJson(value));
       }
     });

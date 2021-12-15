@@ -1,10 +1,8 @@
 import 'package:contactlistwithhive/core/errors/exceptions.dart';
 import 'package:contactlistwithhive/core/errors/failures.dart';
 import 'package:contactlistwithhive/data/datasources/local/contact_local_datasource.dart';
-import 'package:contactlistwithhive/data/models/common/search_filter_model.dart';
 import 'package:contactlistwithhive/data/models/contact_model.dart';
 import 'package:contactlistwithhive/data/repositories/contact_repository_impl.dart';
-import 'package:contactlistwithhive/domain/entities/common/search_filter.dart';
 import 'package:contactlistwithhive/domain/entities/contact.dart';
 import 'package:contactlistwithhive/domain/repositories/contact_repository.dart';
 import 'package:dartz/dartz.dart';
@@ -77,7 +75,7 @@ void main() {
   });
 
   group("get list contacts by filter", () {
-    final SearchFilter filter = SearchFilter(name: "test contact");
+    final String filter = "test contact";
     final List<ContactModel> listContacts = [
       ContactModel(id: "123456", name: "test contact 1", number: "123456"),
       ContactModel(id: "123456", name: "test contact 2", number: "654321"),
