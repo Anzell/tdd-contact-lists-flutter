@@ -31,9 +31,14 @@ class ContactLocalDatasourceImpl implements ContactLocalDatasource {
   }
 
   @override
-  Future<List<ContactModel>> getAllContacts() {
-    // TODO: implement getAllContacts
-    throw UnimplementedError();
+  Future<List<ContactModel>> getAllContacts() async {
+    final box = await hive.openBox(HiveBoxes.contacts);
+    final contactsMap = box.toMap();
+    List<ContactModel> contactsModel = [];
+    contactsMap.forEach((key, value) {
+      contactsModel.add(ContactModel.fromJson(value));
+    });
+    return contactsModel;
   }
 
   @override

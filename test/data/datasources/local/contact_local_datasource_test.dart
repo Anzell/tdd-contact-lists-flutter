@@ -66,4 +66,20 @@ void main() {
       verifyNever(mockHiveBox.delete(any));
     });
   });
+
+  group("get all contacts", () {
+    final Map<dynamic, dynamic> contacts = json.decode(fixture("contacts.json"));
+    final List<ContactModel> listContactModel = [
+      ContactModel(id: "1", name: "andriel", number: "123"),
+      ContactModel(id: "2", name: "pedro", number: "321"),
+      ContactModel(id: "3", name: "fernando", number: "456"),
+    ];
+
+    test("should return a valid List<ContactModel>", () async {
+      when(mockHive.openBox(HiveBoxes.contacts)).thenAnswer((_) async => mockHiveBox);
+      when(mockHiveBox.toMap()).thenReturn(contacts);
+      final result = await datasource.getAllContacts();
+      expect(result, equals(listContactModel));
+    });
+  });
 }
