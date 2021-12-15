@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:contactlistwithhive/core/constants/hive_boxes.dart';
+import 'package:contactlistwithhive/core/errors/exceptions.dart';
 import 'package:contactlistwithhive/core/helpers/string_helper.dart';
 import 'package:contactlistwithhive/data/datasources/local/contact_local_datasource.dart';
 import 'package:contactlistwithhive/data/models/contact_model.dart';
@@ -7,6 +11,7 @@ import 'package:mockito/annotations.dart';
 
 import 'package:hive/hive.dart';
 
+import '../../../fixtures/fixture_reader.dart';
 import 'contact_local_datasource_test.mocks.dart';
 
 @GenerateMocks([HiveInterface, Box, StringHelper])
@@ -40,10 +45,25 @@ void main() {
 
   group("remove contact", () {
     final testId = "1";
+    final Map<dynamic, dynamic> contactsList = json.decode(fixture("contacts.json"));
 
     test("should remove a contact by provided id", () async {
-      when(mockHive.openBox("contacts")).thenAnswer((_) async => mockHiveBox);
+      when(mockHive.openBox(HiveBoxes.contacts)).thenAnswer((_) async => mockHiveBox);
       when(mockHiveBox.delete(any)).thenAnswer((_) async => 1);
+      when(mockHiveBox.toMap()).thenReturn(contactsList);
+      await datasource.removeContact(contactId: testId);
+      verify(mockHive.openBox(HiveBoxes.contacts)).called(1);
+      verify(mockHiveBox.delete(any)).called(1);
+    });
+
+    test("should throw a NotFoundException when the provided id is not valid", () async {
+      when(mockHive.openBox(HiveBoxes.contacts)).thenAnswer((_) async => mockHiveBox);
+      when(mockHiveBox.delete(any)).thenAnswer((_) async => 1);
+      when(mockHiveBox.toMap()).thenReturn(contactsList);
+      final result = datasource.removeContact(contactId: "not valid id");
+      expect(() => result, throwsA(isA<NotFoundException>()));
+      verify(mockHive.openBox(HiveBoxes.contacts)).called(1);
+      verifyNever(mockHiveBox.delete(any));
     });
   });
 }

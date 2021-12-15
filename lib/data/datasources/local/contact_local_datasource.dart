@@ -1,3 +1,5 @@
+import 'package:contactlistwithhive/core/constants/hive_boxes.dart';
+import 'package:contactlistwithhive/core/errors/exceptions.dart';
 import 'package:contactlistwithhive/core/helpers/string_helper.dart';
 import 'package:contactlistwithhive/data/mappers/contact_mapper.dart';
 import 'package:hive/hive.dart';
@@ -24,7 +26,7 @@ class ContactLocalDatasourceImpl implements ContactLocalDatasource {
   @override
   Future<void> addContact({required Contact newContact}) async {
     final uuid = stringHelper.generateUniqueId;
-    final box = await hive.openBox("contacts");
+    final box = await hive.openBox(HiveBoxes.contacts);
     await box.put(uuid, {"id": uuid, ...ContactMapper.entityToModel(newContact).toJson()});
   }
 
@@ -41,9 +43,19 @@ class ContactLocalDatasourceImpl implements ContactLocalDatasource {
   }
 
   @override
-  Future<void> removeContact({required String contactId}) {
-    // TODO: implement removeContact
-    throw UnimplementedError();
+  Future<void> removeContact({required String contactId}) async {
+    final box = await hive.openBox(HiveBoxes.contacts);
+    final contacts = box.toMap();
+    bool foundId = false;
+    contacts.forEach((key, value) {
+      if (key == contactId) {
+        foundId = true;
+        box.delete(key);
+      }
+    });
+    if (!foundId) {
+      throw NotFoundException();
+    }
   }
 
   @override
