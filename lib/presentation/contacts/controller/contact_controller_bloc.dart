@@ -1,3 +1,6 @@
+import 'package:contactlistwithhive/core/constants/error_messages.dart';
+import 'package:contactlistwithhive/core/converters/contact.dart';
+import 'package:contactlistwithhive/core/errors/failures.dart';
 import 'package:contactlistwithhive/domain/usecases/contact/add_contact.dart';
 import 'package:contactlistwithhive/domain/usecases/contact/get_all_contacts.dart';
 import 'package:contactlistwithhive/domain/usecases/contact/get_contacts_by_filter.dart';
@@ -16,6 +19,7 @@ class ContactControllerBloc extends Bloc<ContactControllerBlocEvent, ContactCont
   final UpdateContactUseCase updateContactUseCase;
   final GetAllContactsUseCase getAllContactsUseCase;
   final GetContactsByFilterUseCase getContactsByFilterUseCase;
+  final ContactConverter contactConverter;
 
   ContactControllerBloc({
     required this.addContactUseCase,
@@ -23,7 +27,26 @@ class ContactControllerBloc extends Bloc<ContactControllerBlocEvent, ContactCont
     required this.getContactsByFilterUseCase,
     required this.removeContactUseCase,
     required this.updateContactUseCase,
+    required this.contactConverter,
   }) : super(Empty()) {
-    on<ContactControllerBlocEvent>((event, emit) async {});
+    on<ContactControllerBlocEvent>((event, emit) async {
+      if (event is AddContactBlocEvent) {
+        final contactResult = contactConverter.valueStringToContact(name: event.name, number: event.number);
+        contactResult.fold((failure) => emit(Error(message: _mapFailureMessage(failure))), (contact) async {
+          final addContactUseCaseResult = await addContactUseCase(AddContactUseCaseParams(contact: contact));
+        });
+      }
+    });
+  }
+
+  String _mapFailureMessage(Failure failure) {
+    switch (failure.runtimeType) {
+      case InvalidNameInputFailure:
+        return ErrorMessages.invalidName;
+      case InvalidNumberInputFailure:
+        return ErrorMessages.invalidNumber;
+      default:
+        return ErrorMessages.unkowmnError;
+    }
   }
 }
