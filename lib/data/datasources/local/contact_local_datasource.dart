@@ -4,7 +4,6 @@ import 'package:contactlistwithhive/core/helpers/string_helper.dart';
 import 'package:contactlistwithhive/data/mappers/contact_mapper.dart';
 import 'package:hive/hive.dart';
 
-import 'package:contactlistwithhive/data/models/common/search_filter_model.dart';
 import 'package:contactlistwithhive/data/models/contact_model.dart';
 import 'package:contactlistwithhive/domain/entities/common/search_filter.dart';
 import 'package:contactlistwithhive/domain/entities/contact.dart';
@@ -26,13 +25,13 @@ class ContactLocalDatasourceImpl implements ContactLocalDatasource {
   @override
   Future<void> addContact({required Contact newContact}) async {
     final uuid = stringHelper.generateUniqueId;
-    final box = await hive.openBox(HiveBoxes.contacts);
+    final box = await _openHiveContactsBox();
     await box.put(uuid, {"id": uuid, ...ContactMapper.entityToModel(newContact).toJson()});
   }
 
   @override
   Future<List<ContactModel>> getAllContacts() async {
-    final box = await hive.openBox(HiveBoxes.contacts);
+    final box = await _openHiveContactsBox();
     final contactsMap = box.toMap();
     List<ContactModel> contactsModel = [];
     contactsMap.forEach((key, value) {
@@ -42,14 +41,22 @@ class ContactLocalDatasourceImpl implements ContactLocalDatasource {
   }
 
   @override
-  Future<List<ContactModel>> getContactsByFilter({required SearchFilter filter}) {
-    // TODO: implement getContactsByFilter
-    throw UnimplementedError();
+  Future<List<ContactModel>> getContactsByFilter({required SearchFilter filter}) async {
+    final box = await _openHiveContactsBox();
+    final contacts = box.toMap();
+    List<ContactModel> foundContacts = [];
+    contacts.forEach((key, value) {
+      if ((filter.name != null && value['name'].toString().contains(filter.name!)) ||
+          (filter.number != null && value['number'].toString().contains(filter.number!))) {
+        foundContacts.add(ContactModel.fromJson(value));
+      }
+    });
+    return foundContacts;
   }
 
   @override
   Future<void> removeContact({required String contactId}) async {
-    final box = await hive.openBox(HiveBoxes.contacts);
+    final box = await _openHiveContactsBox();
     final contacts = box.toMap();
     bool foundId = false;
     contacts.forEach((key, value) {
@@ -67,5 +74,9 @@ class ContactLocalDatasourceImpl implements ContactLocalDatasource {
   Future<void> updateContact({required Contact contact}) {
     // TODO: implement updateContact
     throw UnimplementedError();
+  }
+
+  Future<Box> _openHiveContactsBox() async {
+    return await hive.openBox(HiveBoxes.contacts);
   }
 }
