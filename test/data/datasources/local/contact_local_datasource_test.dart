@@ -34,12 +34,12 @@ void main() {
     final testUuid = "123";
 
     test("should register a new contact", () async {
-      when(mockHive.openBox("contacts")).thenAnswer((_) async => mockHiveBox);
+      when(mockHive.openBox(HiveBoxes.contacts)).thenAnswer((_) async => mockHiveBox);
       when(mockStringHelper.generateUniqueId).thenReturn(testUuid);
       when(mockHiveBox.put(testUuid, any)).thenAnswer((_) async => 1);
       await datasource.addContact(newContact: contactModel);
       verify(mockStringHelper.generateUniqueId).called(1);
-      verify(mockHive.openBox("contacts")).called(1);
+      verify(mockHive.openBox(HiveBoxes.contacts)).called(1);
       verify(mockHiveBox.put(testUuid, any)).called(1);
     });
   });
@@ -118,6 +118,27 @@ void main() {
       when(mockHiveBox.toMap()).thenReturn(contacts);
       final result = await datasource.getContactsByFilter(filter: SearchFilter(name: "not cached contact"));
       expect(result, equals([]));
+    });
+  });
+
+  group("update contact", () {
+    final Map<dynamic, dynamic> contacts = json.decode(fixture("contacts.json"));
+    final updatedContactModel = ContactModel(id: "1", name: "andriel", number: "123456");
+    final invalidContactModel = ContactModel(id: "invalidddddd", name: "", number: "");
+
+    test("should update the contact model sucessfull", () async {
+      when(mockHive.openBox(HiveBoxes.contacts)).thenAnswer((_) async => mockHiveBox);
+      when(mockHiveBox.toMap()).thenReturn(contacts);
+      await datasource.updateContact(contact: updatedContactModel);
+      verify(mockHiveBox.put(any, any)).called(1);
+    });
+
+    test("should return a NotFoundException when the provided contact is not listed or id not exists", () async {
+      when(mockHive.openBox(HiveBoxes.contacts)).thenAnswer((_) async => mockHiveBox);
+      when(mockHiveBox.toMap()).thenReturn(contacts);
+      final result = datasource.updateContact(contact: invalidContactModel);
+      expect(result, throwsA(isA<NotFoundException>()));
+      verifyNever(mockHiveBox.put(any, any));
     });
   });
 }

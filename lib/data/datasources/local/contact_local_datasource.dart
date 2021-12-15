@@ -71,9 +71,19 @@ class ContactLocalDatasourceImpl implements ContactLocalDatasource {
   }
 
   @override
-  Future<void> updateContact({required Contact contact}) {
-    // TODO: implement updateContact
-    throw UnimplementedError();
+  Future<void> updateContact({required Contact contact}) async {
+    final box = await _openHiveContactsBox();
+    final contacts = box.toMap();
+    bool foundId = false;
+    contacts.forEach((key, value) {
+      if (key == contact.id) {
+        foundId = true;
+      }
+    });
+    if (!foundId) {
+      throw NotFoundException();
+    }
+    await box.put(contact.id, {"id": contact.id, ...ContactMapper.entityToModel(contact).toJson()});
   }
 
   Future<Box> _openHiveContactsBox() async {
