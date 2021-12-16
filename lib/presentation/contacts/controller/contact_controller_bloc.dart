@@ -6,6 +6,7 @@ import 'package:contactlistwithhive/domain/usecases/contact/get_all_contacts.dar
 import 'package:contactlistwithhive/domain/usecases/contact/get_contacts_by_filter.dart';
 import 'package:contactlistwithhive/domain/usecases/contact/remove_contact.dart';
 import 'package:contactlistwithhive/domain/usecases/contact/update_contact.dart';
+import 'package:contactlistwithhive/domain/usecases/usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:contactlistwithhive/domain/entities/contact.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,6 +60,22 @@ class ContactControllerBloc extends Bloc<ContactControllerBlocEvent, ContactCont
             (_) => emit(Success()),
           );
         });
+      }
+
+      if (event is GetAllContactsBlocEvent) {
+        final getContactsResult = await getAllContactsUseCase(NoParams());
+        getContactsResult.fold(
+          (failure) => emit(Error(message: _mapFailureMessage(failure))),
+          (contacts) => emit(Loaded(contacts: contacts)),
+        );
+      }
+
+      if (event is GetContactByFilterBlocEvent) {
+        final getContactsResult = await getContactsByFilterUseCase(GetContactsByFilterParams(filter: event.filter));
+        getContactsResult.fold(
+          (failure) => emit(Error(message: _mapFailureMessage(failure))),
+          (contacts) => emit(Loaded(contacts: contacts)),
+        );
       }
     });
   }

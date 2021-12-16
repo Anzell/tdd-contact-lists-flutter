@@ -8,10 +8,12 @@ import 'package:contactlistwithhive/domain/usecases/contact/get_all_contacts.dar
 import 'package:contactlistwithhive/domain/usecases/contact/get_contacts_by_filter.dart';
 import 'package:contactlistwithhive/domain/usecases/contact/remove_contact.dart';
 import 'package:contactlistwithhive/domain/usecases/contact/update_contact.dart';
+import 'package:contactlistwithhive/domain/usecases/usecase.dart';
 import 'package:contactlistwithhive/presentation/contacts/controller/contact_controller_bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mocktail/mocktail.dart' as mocktail;
 import 'package:mockito/mockito.dart';
 
 import 'contact_controller_bloc_test.mocks.dart';
@@ -25,11 +27,11 @@ import 'contact_controller_bloc_test.mocks.dart';
   ContactConverter,
 ])
 void main() {
-  late AddContactUseCase mockAddContactUseCase;
-  late RemoveContactUseCase mockRemoveContactUseCase;
-  late UpdateContactUseCase mockUpdateContactUseCase;
-  late GetAllContactsUseCase mockGetAllContactsUseCase;
-  late GetContactsByFilterUseCase mockGetContactsByFilterUseCase;
+  late MockAddContactUseCase mockAddContactUseCase;
+  late MockRemoveContactUseCase mockRemoveContactUseCase;
+  late MockUpdateContactUseCase mockUpdateContactUseCase;
+  late MockGetAllContactsUseCase mockGetAllContactsUseCase;
+  late MockGetContactsByFilterUseCase mockGetContactsByFilterUseCase;
   late MockContactConverter mockContactConverter;
   late ContactControllerBloc bloc;
 
@@ -190,6 +192,61 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(UpdateContactBlocEvent(name: name, number: number, id: id)),
+      expect: () => [Error(message: ErrorMessages.serverError)],
+    );
+  });
+
+  group("get all contacts", () {
+    final List<Contact> testContactsList = [
+      Contact(id: "123456", name: "test contact 1", number: "123456"),
+      Contact(id: "123456", name: "test contact 2", number: "654321"),
+    ];
+
+    blocTest(
+      "should emit a [Loaded] with a valid List<Contact> when GetAllContactsUseCase is called",
+      build: () {
+        when(mockGetAllContactsUseCase(any)).thenAnswer((_) async => right(testContactsList));
+        return bloc;
+      },
+      act: (ContactControllerBloc bloc) => bloc.add(GetAllContactsBlocEvent()),
+      expect: () => [Loaded(contacts: testContactsList)],
+    );
+
+    blocTest(
+      "should emit a [Error] when a call in GetAllContactsUseCase returns left(ServerFailure())",
+      build: () {
+        when(mockGetAllContactsUseCase(any)).thenAnswer((_) async => left(ServerFailure()));
+        return bloc;
+      },
+      act: (ContactControllerBloc bloc) => bloc.add(GetAllContactsBlocEvent()),
+      expect: () => [Error(message: ErrorMessages.serverError)],
+    );
+  });
+
+  group("get contacts by filter", () {
+    final List<Contact> testContactsList = [
+      Contact(id: "123456", name: "test contact 1", number: "123456"),
+      Contact(id: "123456", name: "test contact 2", number: "654321"),
+    ];
+    final filter = "test contact";
+
+    blocTest(
+      "should emit a [Loaded] with List<Contact> when a call in GetContactsByFilterUseCase is sucessfull",
+      build: () {
+        when(mockGetContactsByFilterUseCase(any)).thenAnswer((_) async => right(testContactsList));
+        return bloc;
+      },
+      act: (ContactControllerBloc bloc) => bloc.add(GetContactByFilterBlocEvent(filter: filter)),
+      expect: () => [Loaded(contacts: testContactsList)],
+    );
+
+    blocTest(
+      "should emit a [Error] when a call in GetContactsByFilterUseCase returns left(ServerFailure())",
+      build: () {
+        when(mockGetContactsByFilterUseCase(any)).thenAnswer((_) async => left(ServerFailure()));
+        return bloc;
+      },
+      act: (ContactControllerBloc bloc) => bloc.add(GetContactByFilterBlocEvent(filter: filter)),
       expect: () => [Error(message: ErrorMessages.serverError)],
     );
   });
