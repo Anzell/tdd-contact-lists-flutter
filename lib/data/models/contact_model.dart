@@ -28,7 +28,7 @@ class ContactModel extends Contact {
           id: id,
         );
 
-  factory ContactModel.fromJson(Map<String, dynamic> json) {
+  factory ContactModel.fromJson(Map<dynamic, dynamic> json) {
     return ContactModel(name: json['name'].toString(), number: json['number'].toString(), id: json['id'].toString());
   }
 

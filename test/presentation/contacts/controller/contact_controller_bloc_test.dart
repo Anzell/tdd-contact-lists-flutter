@@ -66,7 +66,7 @@ void main() {
       return bloc;
     },
     act: (ContactControllerBloc bloc) => bloc.add(AddContactBlocEvent(name: "andriel", number: "123456")),
-    expect: () => [Error(message: ErrorMessages.unkowmnError)],
+    expect: () => [Loading(), Error(message: ErrorMessages.unkowmnError)],
   );
 
   group("add contact", () {
@@ -115,7 +115,7 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(AddContactBlocEvent(name: name, number: number)),
-      expect: () => [Error(message: ErrorMessages.serverError)],
+      expect: () => [Loading(), Error(message: ErrorMessages.serverError)],
     );
 
     blocTest(
@@ -126,7 +126,7 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(AddContactBlocEvent(name: name, number: number)),
-      expect: () => [Success()],
+      expect: () => [Loading(), Success()],
     );
   });
 
@@ -141,7 +141,7 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(RemoveContactBlocEvent(id: testId)),
-      expect: () => [Error(message: ErrorMessages.serverError)],
+      expect: () => [Loading(), Error(message: ErrorMessages.serverError)],
     );
     blocTest(
       "should emit [Success] when call to RemoveContact returns sucessfull",
@@ -151,7 +151,7 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(RemoveContactBlocEvent(id: testId)),
-      expect: () => [Success()],
+      expect: () => [Loading(), Success()],
     );
   });
 
@@ -180,7 +180,7 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(UpdateContactBlocEvent(id: id, name: name, number: number)),
-      expect: () => [Error(message: ErrorMessages.invalidName)],
+      expect: () => [Loading(), Error(message: ErrorMessages.invalidName)],
     );
 
     blocTest(
@@ -192,7 +192,7 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(UpdateContactBlocEvent(name: name, number: number, id: id)),
-      expect: () => [Error(message: ErrorMessages.serverError)],
+      expect: () => [Loading(), Error(message: ErrorMessages.serverError)],
     );
   });
 
@@ -209,7 +209,7 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(GetAllContactsBlocEvent()),
-      expect: () => [Loaded(contacts: testContactsList)],
+      expect: () => [Loading(), Loaded(contacts: testContactsList)],
     );
 
     blocTest(
@@ -219,7 +219,7 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(GetAllContactsBlocEvent()),
-      expect: () => [Error(message: ErrorMessages.serverError)],
+      expect: () => [Loading(), Error(message: ErrorMessages.serverError)],
     );
   });
 
@@ -237,7 +237,7 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(GetContactByFilterBlocEvent(filter: filter)),
-      expect: () => [Loaded(contacts: testContactsList)],
+      expect: () => [Loading(), Loaded(contacts: testContactsList)],
     );
 
     blocTest(
@@ -247,7 +247,7 @@ void main() {
         return bloc;
       },
       act: (ContactControllerBloc bloc) => bloc.add(GetContactByFilterBlocEvent(filter: filter)),
-      expect: () => [Error(message: ErrorMessages.serverError)],
+      expect: () => [Loading(), Error(message: ErrorMessages.serverError)],
     );
   });
 }

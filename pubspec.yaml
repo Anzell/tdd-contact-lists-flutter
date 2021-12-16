@@ -1,7 +1,7 @@
 name: contactlistwithhive
 description: A new Flutter project.
 
-publish_to: "none" 
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -10,36 +10,26 @@ environment:
 
 dependencies:
   cupertino_icons: ^1.0.2
+  dartz: ^0.10.1
+  equatable: ^2.0.3
   flutter:
     sdk: flutter
-
-  #database
+  flutter_bloc: ^8.0.0
+  get_it: ^7.2.0
   hive: ^2.0.4
   hive_flutter: ^1.1.0
-  
-  #helpers
-  uuid: ^3.0.5
-  equatable: ^2.0.3
-  dartz: ^0.10.1
-  
-  #state management
-  flutter_bloc: ^8.0.0
-
-  #services
   path_provider: ^2.0.8
-
-  #service locator
-  get_it: ^7.2.0
+  permission_handler: ^8.3.0
+  uuid: ^3.0.5
 
 dev_dependencies:
-  
+  bloc_test: ^9.0.1
+  build_runner: ^2.1.5
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
   hive_generator: ^1.1.1
   mockito: ^5.0.16
-  bloc_test: ^9.0.1
-  build_runner: ^2.1.5
 
 flutter:
   uses-material-design: true
