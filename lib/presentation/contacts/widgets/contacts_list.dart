@@ -40,8 +40,39 @@ class _ContactsListState extends State<ContactsList> {
               ),
             ));
           },
+          trailing: GestureDetector(
+            child: const Icon(
+              Icons.remove,
+              color: Colors.red,
+            ),
+            onTap: () => _confirmDeleteContact(widget.contacts[index].id!),
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> _confirmDeleteContact(String id) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Excluir contato"),
+        content: const Text("Deseja realmente excluir este contato?"),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text("Não")),
+          TextButton(
+            child: const Text("Sim"),
+            onPressed: () {
+              _dispatchDeleteContact(id);
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  void _dispatchDeleteContact(String id) {
+    widget.controller.add(RemoveContactBlocEvent(id: id));
   }
 }

@@ -81,7 +81,7 @@ class ContactLocalDatasourceImpl implements ContactLocalDatasource {
     if (!foundId) {
       throw NotFoundException();
     }
-    await box.put(contact.id, {"id": contact.id, ...ContactMapper.entityToModel(contact).toJson()});
+    await box.put(contact.id, {...ContactMapper.entityToModel(contact).toJson(), "id": contact.id});
   }
 
   Future<Box> _openHiveContactsBox() async {
