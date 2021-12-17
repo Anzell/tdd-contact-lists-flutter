@@ -6,8 +6,9 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class ExternalServicesInjector {
-  static Future<void> init() async {
+class ExternalServicesInjector implements Injector {
+  @override
+  Future<void> init() async {
     //Permissions
     if (await Permission.storage.isGranted == false) {
       await Permission.storage.request();

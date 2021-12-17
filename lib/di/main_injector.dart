@@ -8,15 +8,20 @@ import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
 
-class Injector {
-  static Future<void> init() async {
+abstract class Injector {
+  Future<void> init();
+}
+
+class MainInjector extends Injector {
+  @override
+  Future<void> init() async {
     await Future.wait([
-      ExternalServicesInjector.init(),
-      CoreInjector.init(),
-      DatasourcesInjector.init(),
-      RepositoriesInjector.init(),
-      UseCasesInjector.init(),
-      ControllersInjector.init(),
+      ExternalServicesInjector().init(),
+      CoreInjector().init(),
+      DatasourcesInjector().init(),
+      RepositoriesInjector().init(),
+      UseCasesInjector().init(),
+      ControllersInjector().init(),
     ]);
   }
 }

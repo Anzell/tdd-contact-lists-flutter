@@ -2,8 +2,9 @@ import 'package:contactlistwithhive/data/datasources/local/contact_local_datasou
 import 'package:contactlistwithhive/di/main_injector.dart';
 import 'package:uuid/uuid.dart';
 
-class DatasourcesInjector {
-  static Future<void> init() async {
+class DatasourcesInjector implements Injector {
+  @override
+  Future<void> init() async {
     getIt.registerFactory<ContactLocalDatasource>(
       () => ContactLocalDatasourceImpl(hive: getIt(), stringHelper: getIt()),
     );

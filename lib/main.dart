@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Injector.init();
+  await MainInjector().init();
   if (await Permission.storage.isGranted == true) {
     runApp(MyApp());
   } else {
