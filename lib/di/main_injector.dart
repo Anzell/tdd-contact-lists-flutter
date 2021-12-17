@@ -15,13 +15,11 @@ abstract class Injector {
 class MainInjector extends Injector {
   @override
   Future<void> init() async {
-    await Future.wait([
-      ExternalServicesInjector().init(),
-      CoreInjector().init(),
-      DatasourcesInjector().init(),
-      RepositoriesInjector().init(),
-      UseCasesInjector().init(),
-      ControllersInjector().init(),
-    ]);
+    await CoreInjector().init();
+    await DatasourcesInjector().init();
+    await RepositoriesInjector().init();
+    await UseCasesInjector().init();
+    await ControllersInjector().init();
+    await ExternalServicesInjector().init();
   }
 }
