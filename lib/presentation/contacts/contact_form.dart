@@ -11,7 +11,7 @@ class ContactForm extends StatefulWidget {
   final Function() updateContact;
   final Contact? contact;
 
-  ContactForm({this.contact, required this.updateContact});
+  const ContactForm({this.contact, required this.updateContact});
 
   @override
   State<ContactForm> createState() => _ContactFormState();
@@ -20,19 +20,24 @@ class ContactForm extends StatefulWidget {
 class _ContactFormState extends State<ContactForm> {
   late StreamSubscription stream;
   final ContactControllerBloc controller = getIt<ContactControllerBloc>();
-  final nameController = TextEditingController();
-
-  final numberController = TextEditingController();
+  late final TextEditingController nameController;
+  late final TextEditingController numberController;
 
   @override
   void initState() {
     super.initState();
+    _initController();
     stream = controller.stream.listen((event) {
       if (event is Success) {
         widget.updateContact();
         Navigator.of(context).pop();
       }
     });
+  }
+
+  void _initController() {
+    nameController = TextEditingController(text: widget.contact?.name ?? "");
+    numberController = TextEditingController(text: widget.contact?.number ?? "");
   }
 
   @override
@@ -56,7 +61,7 @@ class _ContactFormState extends State<ContactForm> {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: numberController,
                 keyboardType: TextInputType.phone,
@@ -65,12 +70,16 @@ class _ContactFormState extends State<ContactForm> {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               BlocBuilder<ContactControllerBloc, ContactControllerBlocState>(builder: (context, state) {
                 List<Widget> returnWidgets = [
                   Align(
-                      alignment: Alignment.center,
-                      child: ElevatedButton(onPressed: _dispatchAddContact, child: Text(_getButtonLabel())))
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      onPressed: widget.contact == null ? _dispatchAddContact : _dispatchUpdateContact,
+                      child: Text(_getButtonLabel()),
+                    ),
+                  )
                 ];
                 if (state is Loading) {
                   returnWidgets = [LoadingWidget()];
@@ -78,7 +87,7 @@ class _ContactFormState extends State<ContactForm> {
                 if (state is Error) {
                   returnWidgets.add(Text(
                     state.message,
-                    style: TextStyle(color: Colors.red),
+                    style: const TextStyle(color: Colors.red),
                   ));
                 }
                 return Column(children: returnWidgets);
@@ -95,6 +104,16 @@ class _ContactFormState extends State<ContactForm> {
       name: nameController.text,
       number: numberController.text,
     ));
+  }
+
+  void _dispatchUpdateContact() {
+    controller.add(
+      UpdateContactBlocEvent(
+        name: nameController.text,
+        number: numberController.text,
+        id: widget.contact!.id!,
+      ),
+    );
   }
 
   String _getButtonLabel() {

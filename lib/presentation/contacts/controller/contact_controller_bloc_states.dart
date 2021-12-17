@@ -16,7 +16,7 @@ class Success extends ContactControllerBlocState {}
 class Loaded extends ContactControllerBlocState {
   final List<Contact> contacts;
 
-  Loaded({required this.contacts});
+  const Loaded({required this.contacts});
 
   @override
   List<Object> get props => [contacts];
@@ -25,7 +25,7 @@ class Loaded extends ContactControllerBlocState {
 class Error extends ContactControllerBlocState {
   final String message;
 
-  Error({required this.message});
+  const Error({required this.message});
 
   @override
   List<Object> get props => [message];

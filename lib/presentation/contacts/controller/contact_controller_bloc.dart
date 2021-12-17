@@ -95,6 +95,8 @@ class ContactControllerBloc extends Bloc<ContactControllerBlocEvent, ContactCont
         return ErrorMessages.invalidNumber;
       case ServerFailure:
         return ErrorMessages.serverError;
+      case NotFoundFailure:
+        return ErrorMessages.notFound;
       default:
         return ErrorMessages.unkowmnError;
     }

@@ -1,4 +1,3 @@
-import 'package:contactlistwithhive/domain/entities/contact.dart';
 import 'package:contactlistwithhive/presentation/contacts/contact_form.dart';
 import 'package:contactlistwithhive/presentation/contacts/controller/contact_controller_bloc.dart';
 import 'package:contactlistwithhive/presentation/contacts/widgets/contacts_list.dart';
@@ -19,44 +18,47 @@ class _ContactsScreenState extends State<ContactsScreen> {
   Widget build(BuildContext context) {
     _dispatchGetAllContactsEvent();
     return Scaffold(
-      appBar: AppBar(title: Text("Contatos")),
+      appBar: AppBar(title: const Text("Contatos")),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => ContactForm(updateContact: _updateContact)),
           );
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: SingleChildScrollView(
         child: BlocProvider(
           create: (_) => controller,
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Seus contatos:",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 BlocBuilder<ContactControllerBloc, ContactControllerBlocState>(builder: (context, state) {
                   switch (state.runtimeType) {
                     case Empty:
-                      return Container(child: Text("Nenhum contato"));
+                      return const Text("Nenhum contato");
                     case Loading:
                       return LoadingWidget();
                     case Success:
                       _dispatchGetAllContactsEvent();
-                      return SizedBox();
+                      return const SizedBox();
                     case Loaded:
-                      return ContactsList(contacts: (state as Loaded).contacts, controller: controller);
+                      return ContactsList(
+                        contacts: (state as Loaded).contacts,
+                        controller: controller,
+                        onUpdateContact: _updateContact,
+                      );
                     case Error:
-                      print((state as Error).message);
                       return Text((state as Error).message);
                     default:
-                      return Container(child: Text("Estado inválido da aplicação"));
+                      return const Text("Estado inválido da aplicação");
                   }
                 })
               ],

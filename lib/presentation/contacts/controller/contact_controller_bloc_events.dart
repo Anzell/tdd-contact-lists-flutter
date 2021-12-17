@@ -8,7 +8,7 @@ class AddContactBlocEvent extends ContactControllerBlocEvent {
   final String name;
   final String number;
 
-  AddContactBlocEvent({
+  const AddContactBlocEvent({
     required this.name,
     required this.number,
   });
@@ -20,7 +20,7 @@ class AddContactBlocEvent extends ContactControllerBlocEvent {
 class RemoveContactBlocEvent extends ContactControllerBlocEvent {
   final String id;
 
-  RemoveContactBlocEvent({required this.id});
+  const RemoveContactBlocEvent({required this.id});
 
   @override
   List<Object> get props => [id];
@@ -31,7 +31,7 @@ class UpdateContactBlocEvent extends ContactControllerBlocEvent {
   final String number;
   final String id;
 
-  UpdateContactBlocEvent({
+  const UpdateContactBlocEvent({
     required this.name,
     required this.number,
     required this.id,
@@ -49,7 +49,7 @@ class GetAllContactsBlocEvent extends ContactControllerBlocEvent {
 class GetContactByFilterBlocEvent extends ContactControllerBlocEvent {
   final String filter;
 
-  GetContactByFilterBlocEvent({required this.filter});
+  const GetContactByFilterBlocEvent({required this.filter});
 
   @override
   List<Object> get props => [filter];

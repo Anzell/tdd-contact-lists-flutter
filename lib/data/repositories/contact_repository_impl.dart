@@ -14,7 +14,7 @@ class ContactRepositoryImpl implements ContactRepository {
   Future<Either<Failure, None>> addContact({required Contact newContact}) async {
     try {
       await contactDatasource.addContact(newContact: newContact);
-      return Right(None());
+      return const Right(None());
     } on ServerException {
       return Left(ServerFailure());
     } catch (e) {
@@ -50,7 +50,7 @@ class ContactRepositoryImpl implements ContactRepository {
   Future<Either<Failure, None>> removeContact({required String contactId}) async {
     try {
       await contactDatasource.removeContact(contactId: contactId);
-      return Right(None());
+      return const Right(None());
     } on ServerException {
       return Left(ServerFailure());
     } on NotFoundException {
@@ -64,7 +64,7 @@ class ContactRepositoryImpl implements ContactRepository {
   Future<Either<Failure, None>> updateContact({required Contact contact}) async {
     try {
       await contactDatasource.updateContact(contact: contact);
-      return Right(None());
+      return const Right(None());
     } on ServerException {
       return Left(ServerFailure());
     } on NotFoundException {

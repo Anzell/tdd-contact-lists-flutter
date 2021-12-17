@@ -25,7 +25,7 @@ class ContactLocalDatasourceImpl implements ContactLocalDatasource {
   Future<void> addContact({required Contact newContact}) async {
     final uuid = stringHelper.generateUniqueId;
     final box = await _openHiveContactsBox();
-    await box.put(uuid, {"id": uuid, ...ContactMapper.entityToModel(newContact).toJson()});
+    await box.put(uuid, {...ContactMapper.entityToModel(newContact).toJson(), "id": uuid});
   }
 
   @override
