@@ -2,9 +2,6 @@ part of "contact_controller_bloc.dart";
 
 abstract class ContactControllerBlocEvent extends Equatable {
   const ContactControllerBlocEvent();
-
-  @override
-  List<Object> get props => [];
 }
 
 class AddContactBlocEvent extends ContactControllerBlocEvent {
@@ -44,7 +41,10 @@ class UpdateContactBlocEvent extends ContactControllerBlocEvent {
   List<Object> get props => [name, number];
 }
 
-class GetAllContactsBlocEvent extends ContactControllerBlocEvent {}
+class GetAllContactsBlocEvent extends ContactControllerBlocEvent {
+  @override
+  List<Object> get props => [];
+}
 
 class GetContactByFilterBlocEvent extends ContactControllerBlocEvent {
   final String filter;
