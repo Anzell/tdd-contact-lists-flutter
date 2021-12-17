@@ -1,6 +1,7 @@
 import 'package:contactlistwithhive/presentation/contacts/contact_form.dart';
 import 'package:contactlistwithhive/presentation/contacts/controller/contact_controller_bloc.dart';
 import 'package:contactlistwithhive/presentation/contacts/widgets/contacts_list.dart';
+import 'package:contactlistwithhive/presentation/contacts/widgets/filter_search.dart';
 import 'package:contactlistwithhive/presentation/shared/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,6 +36,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                FilterSearch(updateFilter: _dispatchGetContactsByFilter),
+                const SizedBox(height: 10),
                 const Text(
                   "Seus contatos:",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -71,6 +74,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   void _dispatchGetAllContactsEvent() {
     controller.add(GetAllContactsBlocEvent());
+  }
+
+  void _dispatchGetContactsByFilter(String value) {
+    controller.add(GetContactByFilterBlocEvent(filter: value));
   }
 
   void _updateContact() {
